@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asistencia · Ministerio Infantil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <!-- ====== PANTALLA DE INICIO DE SESIÓN ====== -->
+  <div id="vista-login" class="vista vista-login">
+    <div class="login-tarjeta">
+      <div class="sello-marca" aria-hidden="true">
+        <svg viewBox="0 0 60 60" width="48" height="48">
+          <circle cx="30" cy="30" r="28" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M18 31 L26 39 L42 21" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="eyebrow">Ministerio Infantil</p>
+      <h1>Pasar lista</h1>
+      <p class="login-sub">Inicia sesión para registrar la asistencia de hoy.</p>
+
+      <form id="form-login" class="login-form">
+        <label for="login-email">Correo</label>
+        <input type="email" id="login-email" required autocomplete="username" placeholder="lider@tuiglesia.org">
+        <label for="login-pass">Contraseña</label>
+        <input type="password" id="login-pass" required autocomplete="current-password" placeholder="••••••••">
+        <button type="submit" class="btn btn-primario">Entrar</button>
+        <p id="login-error" class="mensaje-error" role="alert" aria-live="polite"></p>
+      </form>
+      <p class="login-ayuda">¿No tienes cuenta? Pídele a un administrador que te invite desde el panel de Supabase.</p>
+    </div>
+  </div>
+
+  <!-- ====== APP PRINCIPAL ====== -->
+  <div id="vista-app" class="vista vista-app oculto">
+    <header class="topbar">
+      <div class="topbar-marca">
+        <span class="sello-mini" aria-hidden="true">
+          <svg viewBox="0 0 60 60" width="22" height="22">
+            <circle cx="30" cy="30" r="28" fill="none" stroke="currentColor" stroke-width="3"/>
+            <path d="M18 31 L26 39 L42 21" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="topbar-titulo">Asistencia</span>
+      </div>
+      <button id="btn-salir" class="btn-texto">Salir</button>
+    </header>
+
+    <nav class="tabs" aria-label="Secciones">
+      <button class="tab activa" data-tab="pasar-lista">Pasar lista</button>
+      <button class="tab" data-tab="historial">Historial</button>
+      <button class="tab" data-tab="ninos">Niños</button>
+    </nav>
+
+    <!-- TAB: PASAR LISTA -->
+    <section id="tab-pasar-lista" class="tab-panel tab-panel-activa">
+      <div class="panel-encabezado">
+        <div>
+          <p class="eyebrow">Hoy</p>
+          <h2 id="fecha-hoy-texto">—</h2>
+        </div>
+        <div class="contador-presentes">
+          <span id="contador-num">0</span>
+          <span class="contador-label">presentes</span>
+        </div>
+      </div>
+
+      <div class="selector-grupo">
+        <label for="select-grupo" class="visualmente-oculto">Grupo</label>
+        <select id="select-grupo"></select>
+      </div>
+
+      <div id="lista-ninos-asistencia" class="lista-ninos">
+        <p class="estado-vacio">Cargando niños…</p>
+      </div>
+    </section>
+
+    <!-- TAB: HISTORIAL -->
+    <section id="tab-historial" class="tab-panel">
+      <div class="panel-encabezado">
+        <div>
+          <p class="eyebrow">Historial</p>
+          <h2>Asistencia por fecha</h2>
+        </div>
+      </div>
+      <div class="historial-controles">
+        <label for="historial-fecha" class="visualmente-oculto">Elegir fecha</label>
+        <input type="date" id="historial-fecha">
+      </div>
+      <div id="historial-resultado" class="lista-ninos">
+        <p class="estado-vacio">Elige una fecha para ver el registro.</p>
+      </div>
+    </section>
+
+    <!-- TAB: NIÑOS -->
+    <section id="tab-ninos" class="tab-panel">
+      <div class="panel-encabezado">
+        <div>
+          <p class="eyebrow">Administrar</p>
+          <h2>Niños inscritos</h2>
+        </div>
+        <button id="btn-nuevo-nino" class="btn btn-secundario">+ Agregar niño</button>
+      </div>
+      <div id="lista-ninos-admin" class="lista-ninos">
+        <p class="estado-vacio">Cargando…</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ====== MODAL: AGREGAR / EDITAR NIÑO ====== -->
+  <div id="modal-nino" class="modal-fondo oculto">
+    <div class="modal-tarjeta">
+      <h3 id="modal-nino-titulo">Agregar niño</h3>
+      <form id="form-nino">
+        <input type="hidden" id="nino-id">
+        <label for="nino-nombre">Nombre completo</label>
+        <input type="text" id="nino-nombre" required placeholder="Ej. Mateo Rodríguez">
+
+        <label for="nino-nacimiento">Fecha de nacimiento</label>
+        <input type="date" id="nino-nacimiento">
+
+        <label for="nino-grupo">Grupo</label>
+        <select id="nino-grupo"></select>
+
+        <label for="nino-tutor-nombre">Nombre del padre/tutor</label>
+        <input type="text" id="nino-tutor-nombre" placeholder="Ej. Laura Rodríguez">
+
+        <label for="nino-tutor-telefono">Teléfono del tutor</label>
+        <input type="tel" id="nino-tutor-telefono" placeholder="Ej. 999 999 999">
+
+        <div class="modal-acciones">
+          <button type="button" id="btn-cancelar-nino" class="btn btn-texto">Cancelar</button>
+          <button type="submit" class="btn btn-primario">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast oculto" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
