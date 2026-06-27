@@ -2,7 +2,7 @@
 // APP DE ASISTENCIA — lógica principal
 // ============================================================
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let grupos = [];
 let ninos = [];
@@ -14,7 +14,7 @@ const hoyISO = () => new Date().toISOString().slice(0, 10);
 // AUTENTICACIÓN
 // ------------------------------------------------------------
 async function revisarSesion() {
-  const { data } = await supabase.auth.getSession();
+  const { data } = await sb.auth.getSession();
   if (data.session) {
     mostrarApp();
   } else {
@@ -40,7 +40,7 @@ document.getElementById("form-login").addEventListener("submit", async (e) => {
   const errorEl = document.getElementById("login-error");
   errorEl.textContent = "";
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await sb.auth.signInWithPassword({ email, password });
   if (error) {
     errorEl.textContent = "Correo o contraseña incorrectos.";
     return;
@@ -49,7 +49,7 @@ document.getElementById("form-login").addEventListener("submit", async (e) => {
 });
 
 document.getElementById("btn-salir").addEventListener("click", async () => {
-  await supabase.auth.signOut();
+  await sb.auth.signOut();
   mostrarLogin();
 });
 
@@ -87,7 +87,7 @@ async function cargarDatosIniciales() {
 }
 
 async function cargarGrupos() {
-  const { data, error } = await supabase.from("grupos").select("*").order("edad_min");
+  const { data, error } = await sb.from("grupos").select("*").order("edad_min");
   if (error) return mostrarToast("No se pudieron cargar los grupos");
   grupos = data || [];
 
@@ -100,13 +100,13 @@ async function cargarGrupos() {
 }
 
 async function cargarNinos() {
-  const { data, error } = await supabase.from("ninos").select("*").eq("activo", true).order("nombre_completo");
+  const { data, error } = await sb.from("ninos").select("*").eq("activo", true).order("nombre_completo");
   if (error) return mostrarToast("No se pudieron cargar los niños");
   ninos = data || [];
 }
 
 async function cargarAsistenciaDeHoy() {
-  const { data, error } = await supabase.from("asistencia").select("nino_id, presente").eq("fecha", hoyISO());
+  const { data, error } = await sb.from("asistencia").select("nino_id, presente").eq("fecha", hoyISO());
   if (error) return;
   asistenciaHoy = {};
   (data || []).forEach((r) => { asistenciaHoy[r.nino_id] = r.presente; });
@@ -153,9 +153,9 @@ async function marcarAsistencia(ninoId) {
   renderPasarLista();
   actualizarContador();
 
-  const { data: usuario } = await supabase.auth.getUser();
+  const { data: usuario } = await sb.auth.getUser();
 
-  const { error } = await supabase.from("asistencia").upsert({
+  const { error } = await sb.from("asistencia").upsert({
     nino_id: ninoId,
     fecha: hoyISO(),
     presente: nuevoEstado,
@@ -183,7 +183,7 @@ async function cargarHistorial() {
   const contenedor = document.getElementById("historial-resultado");
   if (!fecha) return;
 
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from("asistencia")
     .select("nino_id, presente, ninos(nombre_completo, grupo_id)")
     .eq("fecha", fecha)
@@ -275,9 +275,9 @@ document.getElementById("form-nino").addEventListener("submit", async (e) => {
 
   let error;
   if (id) {
-    ({ error } = await supabase.from("ninos").update(payload).eq("id", id));
+    ({ error } = await sb.from("ninos").update(payload).eq("id", id));
   } else {
-    ({ error } = await supabase.from("ninos").insert(payload));
+    ({ error } = await sb.from("ninos").insert(payload));
   }
 
   if (error) {
