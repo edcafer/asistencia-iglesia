@@ -5,5 +5,5 @@
 // Settings (engranaje) → API → "Project URL" y "anon public" key
 // ============================================================
 
-const SUPABASE_URL = "PEGA_AQUI_TU_PROJECT_URL";
-const SUPABASE_ANON_KEY = "PEGA_AQUI_TU_ANON_KEY";
+const SUPABASE_URL = "sb_publishable_itUf_shDjL6dEDjsxdou6g_h5lsgEGj";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4aGJvcmtleml5dmtyem5teHliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MDIwOTgsImV4cCI6MjA5ODA3ODA5OH0.S0SoTI1-sdV3tZeOFm6V4Gb5AdDIAFLyhWu_M58rN7g";
